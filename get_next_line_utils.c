@@ -6,7 +6,7 @@
 /*   By: pyathams <pyathams@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 02:14:57 by pyathams          #+#    #+#             */
-/*   Updated: 2024/03/17 02:14:57 by pyathams         ###   ########.fr       */
+/*   Updated: 2024/03/17 17:04:46 by pyathams         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*ft_strdup(const char *s)
 	i = 0;
 	j = ft_strlen(s);
 	str = (char *)malloc(sizeof(*str) * (j + 1));
-	while(i < j)
+	while (i < j)
 	{
 		str[i] = s[i];
 		i++;
@@ -66,7 +66,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	str = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!str)
 		return (NULL);
-	while (s1[i]!= '\0')
+	while (s1[i] != '\0')
 	{
 		str[i] = s1[i];
 		i++;

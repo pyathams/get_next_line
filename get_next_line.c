@@ -6,15 +6,15 @@
 /*   By: pyathams <pyathams@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 02:14:50 by pyathams          #+#    #+#             */
-/*   Updated: 2024/03/17 02:14:50 by pyathams         ###   ########.fr       */
+/*   Updated: 2024/03/17 17:28:12 by pyathams         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char *read_line_buffer(int fd , char *buf, char *final)
+static char	*read_line_buffer(int fd, char *buf, char *final)
 {
-	int	read_line;
+	int		read_line;
 	char	*char_temp;
 
 	read_line = 1;
@@ -23,13 +23,15 @@ static char *read_line_buffer(int fd , char *buf, char *final)
 		read_line = read(fd, buf, BUFFER_SIZE);
 		if (read_line == -1)
 			return (NULL);
-		else if (read_line == 0)
+		if (read_line == 0)
 			break ;
 		buf[read_line] = '\0';
 		if (!final)
 			final = ft_strdup("");
 		char_temp = final;
-		final = ft_strjoin(char_temp,buf);
+		final = ft_strjoin(char_temp, buf);
+		if (!final)
+			return (NULL);
 		free(char_temp);
 		char_temp = NULL;
 		if (ft_strchr (buf, '\n'))
@@ -46,13 +48,16 @@ static char	*extract(char *line)
 	count = 0;
 	while (line[count] != '\0' && line[count] != '\n')
 		count++;
-	if (line[count] != '\0')
+	if (line[count] == '\0')
 		return (NULL);
 	backup = ft_substr(line, count + 1, ft_strlen(line)- count);
-	if (*backup == '\0')
-	{
-		free(backup);
+	if (!backup)
 		backup = NULL;
+	if (backup[0] == '\0')
+	{
+		free (backup);
+		backup = NULL;
+		return (NULL);
 	}
 	line[count + 1] = '\0';
 	return (backup);
@@ -60,7 +65,7 @@ static char	*extract(char *line)
 
 char	*get_next_line(int fd)
 {
-    char		*line;
+	char		*line;
 	char		*buf;
 	static char	*final;
 
@@ -73,28 +78,40 @@ char	*get_next_line(int fd)
 	free(buf);
 	buf = NULL;
 	if (!line)
-	{
-		if (final)
-		{
-			free(final);
-			final = NULL;
-		}
 		return (NULL);
-	}
 	final = extract(line);
 	return (line);
 }
 
+#include <fcntl.h>
+#include <stdio.h>
+
 int	main(void)
 {
 	int	fd;
-	int i;
+	char	*line;
+	int	i;
 
 	i = 0;
 	fd = open("text.txt", O_RDONLY);
-	while(i < 6)
+
+	if (fd == -1)
 	{
-		printf("%s", get_next_line(fd));
-		i++;
+		perror("Error opening file");
+		return (1);
 	}
+	while ((line = get_next_line(0)) != NULL)
+	{
+		printf("%s", line);
+		free(line);
+	}
+	// while (i < 5)
+	// {
+	// 	line = get_next_line(fd);
+	// 	printf("%s", line);
+	// 	free(line);
+	// 	i++;
+	// }
+	close(fd);
+	return 0;
 }
