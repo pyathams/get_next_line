@@ -73,7 +73,14 @@ char	*get_next_line(int fd)
 	free(buf);
 	buf = NULL;
 	if (!line)
+	{
+		if (final)
+		{
+			free(final);
+			final = NULL;
+		}
 		return (NULL);
+	}
 	final = extract(line);
 	return (line);
 }
@@ -85,7 +92,7 @@ int	main(void)
 
 	i = 0;
 	fd = open("text.txt", O_RDONLY);
-	while(i < 127 && get_next_line(fd))
+	while(i < 6)
 	{
 		printf("%s", get_next_line(fd));
 		i++;
